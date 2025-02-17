@@ -1,0 +1,11 @@
+package chess;
+
+public class ReturnPiece {
+    public enum PieceType {
+        P, R, N, B, Q, K
+    }
+
+    public PieceType pieceType;
+    public char pieceFile;
+    public int pieceRank;
+}
