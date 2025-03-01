@@ -175,6 +175,14 @@ public class Board {
         return null;  // Return null if the position is out of bounds
     }
 
+    public void setPieceAt(ReturnPiece.PieceFile file, int rank, Piece piece) {
+        int x = file.ordinal();
+        int y = rank - 1;  // Convert to 0-based index
+        if (x >= 0 && x < 8 && y >= 0 && y < 8) {
+            squares[y][x] = piece;
+        }
+    }
+
     private String fileRankToString(ReturnPiece.PieceFile file, int rank) {
         return file.toString() + rank;
     }

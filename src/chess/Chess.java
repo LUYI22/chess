@@ -46,6 +46,13 @@ public class Chess {
         board.movePiece(from, to);
         returnPlay.piecesOnBoard = board.getPieces();
 
+        Piece movedPiece = board.getPieceAt(ReturnPiece.PieceFile.valueOf(positionFile(to)), positionRank(to));
+        if (movedPiece instanceof Pawn && (positionRank(to) == 1 || positionRank(to) == 8)) {
+            String promotionPiece = parts.length > 2 ? parts[2].toUpperCase() : "Q";
+            Piece promotedPiece = ((Pawn) movedPiece).promote(promotionPiece);
+            board.setPieceAt(ReturnPiece.PieceFile.valueOf(positionFile(to)), positionRank(to), promotedPiece);
+            returnPlay.piecesOnBoard = board.getPieces();
+        }
         if (parts.length > 2 && parts[2].toLowerCase().equals("draw?")) {
             returnPlay.message = ReturnPlay.Message.DRAW;
             return returnPlay;

@@ -32,6 +32,25 @@ public class Pawn extends Piece {
         return false;
     }
 
+    public Piece promote(String promotionPiece) {
+        Piece promotedPiece;
+        switch (promotionPiece.toUpperCase()) {
+            case "R":
+                promotedPiece = new Rook(PieceType.valueOf(this.color.toUpperCase().charAt(0) + "R"), this.pieceFile, this.pieceRank, this.color, this.board);
+                break;
+            case "N":
+                promotedPiece = new Knight(PieceType.valueOf(this.color.toUpperCase().charAt(0) + "N"), this.pieceFile, this.pieceRank, this.color, this.board);
+                break;
+            case "B":
+                promotedPiece = new Bishop(PieceType.valueOf(this.color.toUpperCase().charAt(0) + "B"), this.pieceFile, this.pieceRank, this.color, this.board);
+                break;
+            default:
+                promotedPiece = new Queen(PieceType.valueOf(this.color.toUpperCase().charAt(0) + "Q"), this.pieceFile, this.pieceRank, this.color, this.board);
+                break;
+        }
+        return promotedPiece;
+    }
+
     private boolean isForwardMove(PieceFile currentFile, PieceFile finalFile, int currentRank, int finalRank) {
         if (currentFile == finalFile) {
             if (this.color.equals("white") && finalRank == currentRank + 1) {
