@@ -3,23 +3,27 @@ package chess;
 import java.util.ArrayList;
 
 public class Chess {
-    private String currentPlayer;
-    private Board board;
+    private static String currentPlayer;
+    private static Board board;
 
-    public Chess() {
+    public static void start() {
         board = new Board();
         currentPlayer = "white";
     }
 
     public static ReturnPlay play(String move) {
-        // This method should be implemented to handle each move
-        // For now, we'll return a placeholder
-        return new ReturnPlay();
-    }
-
-    public ReturnPlay makeMove(String from, String to) {
         ReturnPlay returnPlay = new ReturnPlay();
         returnPlay.piecesOnBoard = new ArrayList<>();
+
+        // Parse the move
+        String[] parts = move.split(" ");
+        if (parts.length != 2) {
+            returnPlay.message = ReturnPlay.Message.ILLEGAL_MOVE;
+            return returnPlay;
+        }
+
+        String from = parts[0];
+        String to = parts[1];
 
         if (!board.isValidMove(from, to, currentPlayer)) {
             returnPlay.message = ReturnPlay.Message.ILLEGAL_MOVE;
