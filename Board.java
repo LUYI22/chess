@@ -3,6 +3,13 @@ package chess;
 import java.util.ArrayList;
 import java.util.List;
 
+import chess.Rook;
+import chess.Knight;
+import chess.Bishop;
+import chess.Queen;
+import chess.King;
+import chess.Pawn;
+
 public class Board {
     private Piece[][] squares;
 
@@ -27,7 +34,7 @@ public class Board {
 
         // Initialize black pieces
         squares[7][0] = new Rook(ReturnPiece.PieceType.BR, ReturnPiece.PieceFile.a, 8, "black",this);
-        squares[7][1] = new Knight(ReturnPiece.PieceType.BN, ReturnPiece.PieceFile.b, 8, "black". this);
+        squares[7][1] = new Knight(ReturnPiece.PieceType.BN, ReturnPiece.PieceFile.b, 8, "black", this);
         squares[7][2] = new Bishop(ReturnPiece.PieceType.BB, ReturnPiece.PieceFile.c, 8, "black", this);
         squares[7][3] = new Queen(ReturnPiece.PieceType.BQ, ReturnPiece.PieceFile.d, 8, "black", this);
         squares[7][4] = new King(ReturnPiece.PieceType.BK, ReturnPiece.PieceFile.e, 8, "black", this);

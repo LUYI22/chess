@@ -1,5 +1,9 @@
 package chess;
 
+import chess.Board;
+import chess.Chess;
+import chess.Piece;
+
 public class Rook extends Piece {
     public Rook(PieceType piecetype, PieceFile pieceFile, int pieceRank, String color, Board board) {
         super(piecetype, pieceFile, pieceRank, color, board);
