@@ -1,17 +1,46 @@
 package chess;
 
-public abstract class Piece {
-    protected Player player;
+public abstract class Piece extends ReturnPiece{
+    //fields
+    protected String color;
 
-    public Piece(Player player) {
-        this.player = player;
+    //constructor 
+    public Piece (PieceType piecetype, PieceFile pieceFile, int pieceRank, String color){
+        super(); //ReturnPiece has default const
+        //need to set those super values manually
+        this.pieceType = piecetype;
+        this.pieceFile = pieceFile;
+        this.pieceRank = pieceRank;
+        this.color = color;
     }
 
-    public Player getPlayer() {
-        return player;
+
+    //abstract methods bc it is dependent on piece 
+
+    /**
+     *  every piece moves
+     * @param String the desired location of the piece from its current location
+     * 
+     */
+    public void move(String fileRankFinal){
+        this.pieceFile = PieceFile.valueOf(Chess.positionFile(fileRankFinal));
+        this.pieceRank = Chess.positionRank(fileRankFinal);
+            
     }
 
-    public abstract boolean isValidMove(int fromX, int fromY, int toX, int toY, Piece[][] board);
+    /** 
+     * checks if a piece can move to a specifc fileRank 
+     * @param String fileRank - the desired fileRank
+     * 
+     * @return boolean to see if the piece is capable of making that move 
+     */
+    //was orignally protected but canMove is needed to check for Checks
+    public abstract boolean canMove(String fileRankfinal);
+    //need helper method to check if first move is legal 
+    
+    public String getColor(){
+        return color;
+    }
 
-    public abstract ReturnPiece.PieceType getType();
+
 }
