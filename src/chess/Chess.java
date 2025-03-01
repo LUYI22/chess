@@ -67,6 +67,10 @@ public class Chess {
         return position.substring(0, 1);
     }
 
+    public static String getCurrentPlayer() {
+        return currentPlayer;
+    }
+
     public static int positionRank(String position) {
         return Character.getNumericValue(position.charAt(1));
     }

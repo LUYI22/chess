@@ -30,6 +30,9 @@ public class PlayChess {
 			// print result board
 			printBoard(res.piecesOnBoard);
 			System.out.println();
+
+			// print whose move it is
+            System.out.println("It's " + Chess.getCurrentPlayer() + "'s move.");
 			
 			// next line
 			line = sc.nextLine();
