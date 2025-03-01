@@ -42,7 +42,7 @@ public class Pawn extends Piece {
     }
 
     private boolean isCaptureMove(PieceFile currentFile, PieceFile finalFile, int currentRank, int finalRank) {
-        if(math.abs(currentFile.ordinal() - finalFile.ordinal()) == 1){
+        if(Math.abs(currentFile.ordinal() - finalFile.ordinal()) == 1){
             if (this.color.equals("white") && finalRank == currentRank + 1) {
                 return true;
             } else if (this.color.equals("black") && finalRank == currentRank - 1) {
