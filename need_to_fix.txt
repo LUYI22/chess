@@ -1,2 +1,5 @@
 pawn promotion
 castling
+Enpassant
+reset game
+check/checkmate 
