@@ -1,3 +1,2 @@
-1. pawns on first turn cannot move only 1 square (forced to be 2)
-2. pawns can move diagonally without capturing
-3. pawns can capture straight forward
+pawn promotion
+castling
