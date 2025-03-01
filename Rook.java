@@ -1,3 +1,5 @@
-public class Rook {
+package chess;
+
+public class Rook extends Piece{
     
 }
