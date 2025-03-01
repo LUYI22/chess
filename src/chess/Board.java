@@ -1,14 +1,6 @@
 package chess;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import chess.Rook;
-import chess.Knight;
-import chess.Bishop;
-import chess.Queen;
-import chess.King;
-import chess.Pawn;
 
 public class Board {
     private Piece[][] squares;

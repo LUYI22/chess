@@ -3,27 +3,32 @@ package chess;
 import java.util.ArrayList;
 
 public class Chess {
-    private static String currentPlayer;
+
+    enum Player { white, black }
+    
     private static Board board;
+    private static Player currentPlayer;
 
-    public static void start() {
-        board = new Board();
-        currentPlayer = "white";
-    }
-
+    /**
+     * Plays the next move for whichever player has the turn.
+     * 
+     * @param move String for next move, e.g. "a2 a3"
+     * 
+     * @return A ReturnPlay instance that contains the result of the move.
+     *         See the section "The Chess class" in the assignment description for details of
+     *         the contents of the returned ReturnPlay instance.
+     */
     public static ReturnPlay play(String move) {
         ReturnPlay returnPlay = new ReturnPlay();
         returnPlay.piecesOnBoard = new ArrayList<>();
 
-        // Handle resign
         if (move.toLowerCase().equals("resign")) {
             returnPlay.piecesOnBoard = board.getPieces();
-            returnPlay.message = currentPlayer.equals("white") ? 
+            returnPlay.message = (currentPlayer == Player.white) ? 
                 ReturnPlay.Message.RESIGN_BLACK_WINS : ReturnPlay.Message.RESIGN_WHITE_WINS;
             return returnPlay;
         }
 
-        // Parse the move
         String[] parts = move.split(" ");
         if (parts.length < 2) {
             returnPlay.message = ReturnPlay.Message.ILLEGAL_MOVE;
@@ -33,29 +38,27 @@ public class Chess {
         String from = parts[0];
         String to = parts[1];
 
-        if (!board.isValidMove(from, to, currentPlayer)) {
+        if (!board.isValidMove(from, to, currentPlayer.toString().toLowerCase())) {
             returnPlay.message = ReturnPlay.Message.ILLEGAL_MOVE;
             return returnPlay;
         }
 
-        // Execute the move
         board.movePiece(from, to);
         returnPlay.piecesOnBoard = board.getPieces();
 
-        // Handle draw offer
         if (parts.length > 2 && parts[2].toLowerCase().equals("draw?")) {
             returnPlay.message = ReturnPlay.Message.DRAW;
             return returnPlay;
         }
 
-        String opponent = (currentPlayer.equals("white")) ? "black" : "white";
+        Player opponent = (currentPlayer == Player.white) ? Player.black : Player.white;
 
-        if (board.isCheckmate(opponent)) {
-            returnPlay.message = (currentPlayer.equals("white")) ? 
+        if (board.isCheckmate(opponent.toString().toLowerCase())) {
+            returnPlay.message = (currentPlayer == Player.white) ? 
                 ReturnPlay.Message.CHECKMATE_WHITE_WINS : ReturnPlay.Message.CHECKMATE_BLACK_WINS;
-        } else if (board.isCheck(opponent)) {
+        } else if (board.isCheck(opponent.toString().toLowerCase())) {
             returnPlay.message = ReturnPlay.Message.CHECK;
-        } else if (board.isStalemate(opponent)) {
+        } else if (board.isStalemate(opponent.toString().toLowerCase())) {
             returnPlay.message = ReturnPlay.Message.STALEMATE;
         }
 
@@ -63,12 +66,20 @@ public class Chess {
         return returnPlay;
     }
 
-    public static String positionFile(String position) {
-        return position.substring(0, 1);
+    /**
+     * This method should reset the game, and start from scratch.
+     */
+    public static void start() {
+        board = new Board();
+        currentPlayer = Player.white;
     }
 
-    public static String getCurrentPlayer() {
+    // Helper methods
+    public static Player getCurrentPlayer() {
         return currentPlayer;
+    }
+    public static String positionFile(String position) {
+        return position.substring(0, 1);
     }
 
     public static int positionRank(String position) {
