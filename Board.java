@@ -13,29 +13,29 @@ public class Board {
 
     private void initializeBoard() {
         // Initialize white pieces
-        squares[0][0] = new Rook(ReturnPiece.PieceType.WR, ReturnPiece.PieceFile.a, 1, "white");
-        squares[0][1] = new Knight(ReturnPiece.PieceType.WN, ReturnPiece.PieceFile.b, 1, "white");
-        squares[0][2] = new Bishop(ReturnPiece.PieceType.WB, ReturnPiece.PieceFile.c, 1, "white");
-        squares[0][3] = new Queen(ReturnPiece.PieceType.WQ, ReturnPiece.PieceFile.d, 1, "white");
-        squares[0][4] = new King(ReturnPiece.PieceType.WK, ReturnPiece.PieceFile.e, 1, "white");
-        squares[0][5] = new Bishop(ReturnPiece.PieceType.WB, ReturnPiece.PieceFile.f, 1, "white");
-        squares[0][6] = new Knight(ReturnPiece.PieceType.WN, ReturnPiece.PieceFile.g, 1, "white");
-        squares[0][7] = new Rook(ReturnPiece.PieceType.WR, ReturnPiece.PieceFile.h, 1, "white");
+        squares[0][0] = new Rook(ReturnPiece.PieceType.WR, ReturnPiece.PieceFile.a, 1, "white", this);
+        squares[0][1] = new Knight(ReturnPiece.PieceType.WN, ReturnPiece.PieceFile.b, 1, "white", this);
+        squares[0][2] = new Bishop(ReturnPiece.PieceType.WB, ReturnPiece.PieceFile.c, 1, "white", this);
+        squares[0][3] = new Queen(ReturnPiece.PieceType.WQ, ReturnPiece.PieceFile.d, 1, "white", this);
+        squares[0][4] = new King(ReturnPiece.PieceType.WK, ReturnPiece.PieceFile.e, 1, "white", this);
+        squares[0][5] = new Bishop(ReturnPiece.PieceType.WB, ReturnPiece.PieceFile.f, 1, "white", this);
+        squares[0][6] = new Knight(ReturnPiece.PieceType.WN, ReturnPiece.PieceFile.g, 1, "white", this);
+        squares[0][7] = new Rook(ReturnPiece.PieceType.WR, ReturnPiece.PieceFile.h, 1, "white", this);
         for (int i = 0; i < 8; i++) {
-            squares[1][i] = new Pawn(ReturnPiece.PieceType.WP, ReturnPiece.PieceFile.values()[i], 2, "white");
+            squares[1][i] = new Pawn(ReturnPiece.PieceType.WP, ReturnPiece.PieceFile.values()[i], 2, "white", this);
         }
 
         // Initialize black pieces
-        squares[7][0] = new Rook(ReturnPiece.PieceType.BR, ReturnPiece.PieceFile.a, 8, "black");
-        squares[7][1] = new Knight(ReturnPiece.PieceType.BN, ReturnPiece.PieceFile.b, 8, "black");
-        squares[7][2] = new Bishop(ReturnPiece.PieceType.BB, ReturnPiece.PieceFile.c, 8, "black");
-        squares[7][3] = new Queen(ReturnPiece.PieceType.BQ, ReturnPiece.PieceFile.d, 8, "black");
-        squares[7][4] = new King(ReturnPiece.PieceType.BK, ReturnPiece.PieceFile.e, 8, "black");
-        squares[7][5] = new Bishop(ReturnPiece.PieceType.BB, ReturnPiece.PieceFile.f, 8, "black");
-        squares[7][6] = new Knight(ReturnPiece.PieceType.BN, ReturnPiece.PieceFile.g, 8, "black");
-        squares[7][7] = new Rook(ReturnPiece.PieceType.BR, ReturnPiece.PieceFile.h, 8, "black");
+        squares[7][0] = new Rook(ReturnPiece.PieceType.BR, ReturnPiece.PieceFile.a, 8, "black",this);
+        squares[7][1] = new Knight(ReturnPiece.PieceType.BN, ReturnPiece.PieceFile.b, 8, "black". this);
+        squares[7][2] = new Bishop(ReturnPiece.PieceType.BB, ReturnPiece.PieceFile.c, 8, "black", this);
+        squares[7][3] = new Queen(ReturnPiece.PieceType.BQ, ReturnPiece.PieceFile.d, 8, "black", this);
+        squares[7][4] = new King(ReturnPiece.PieceType.BK, ReturnPiece.PieceFile.e, 8, "black", this);
+        squares[7][5] = new Bishop(ReturnPiece.PieceType.BB, ReturnPiece.PieceFile.f, 8, "black", this);
+        squares[7][6] = new Knight(ReturnPiece.PieceType.BN, ReturnPiece.PieceFile.g, 8, "black", this);
+        squares[7][7] = new Rook(ReturnPiece.PieceType.BR, ReturnPiece.PieceFile.h, 8, "black", this);
         for (int i = 0; i < 8; i++) {
-            squares[6][i] = new Pawn(ReturnPiece.PieceType.BP, ReturnPiece.PieceFile.values()[i], 7, "black");
+            squares[6][i] = new Pawn(ReturnPiece.PieceType.BP, ReturnPiece.PieceFile.values()[i], 7, "black", this);
         }
     }
 
@@ -165,6 +165,15 @@ public class Board {
             }
         }
         return null; // This should never happen in a valid chess game
+    }
+
+    public Piece getPieceAt(ReturnPiece.PieceFile file, int rank) {
+        int x = file.ordinal();
+        int y = rank - 1;  // Convert to 0-based index
+        if (x >= 0 && x < 8 && y >= 0 && y < 8) {
+            return squares[y][x];
+        }
+        return null;  // Return null if the position is out of bounds
     }
 
     private String fileRankToString(ReturnPiece.PieceFile file, int rank) {

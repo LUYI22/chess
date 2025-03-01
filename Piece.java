@@ -1,14 +1,16 @@
 package chess;
 
-public abstract class Piece extends ReturnPiece{
-    String color; //white or black
+public abstract class Piece extends ReturnPiece {
+    protected String color;
+    protected Board board;  // Add this line
 
-    public Piece (PieceType piecetype, PieceFile pieceFile, int pieceRank, String color){
-        super(); 
+    public Piece(PieceType piecetype, PieceFile pieceFile, int pieceRank, String color, Board board) {
+        super();
         this.pieceType = piecetype;
         this.pieceFile = pieceFile;
         this.pieceRank = pieceRank;
         this.color = color;
+        this.board = board;  // Add this line
     }
 
     public String getColor(){

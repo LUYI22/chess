@@ -1,8 +1,8 @@
 package chess;
 
 public class Pawn extends Piece {
-    public Pawn(PieceType piecetype, PieceFile pieceFile, int pieceRank, String color) {
-        super(piecetype, pieceFile, pieceRank, color);
+    public Pawn(PieceType piecetype, PieceFile pieceFile, int pieceRank, String color, Board board) {
+        super(piecetype, pieceFile, pieceRank, color, board);
     }
 
     @Override
