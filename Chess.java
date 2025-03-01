@@ -15,9 +15,17 @@ public class Chess {
         ReturnPlay returnPlay = new ReturnPlay();
         returnPlay.piecesOnBoard = new ArrayList<>();
 
+        // Handle resign
+        if (move.toLowerCase().equals("resign")) {
+            returnPlay.piecesOnBoard = board.getPieces();
+            returnPlay.message = currentPlayer.equals("white") ? 
+                ReturnPlay.Message.RESIGN_BLACK_WINS : ReturnPlay.Message.RESIGN_WHITE_WINS;
+            return returnPlay;
+        }
+
         // Parse the move
         String[] parts = move.split(" ");
-        if (parts.length != 2) {
+        if (parts.length < 2) {
             returnPlay.message = ReturnPlay.Message.ILLEGAL_MOVE;
             return returnPlay;
         }
@@ -30,8 +38,15 @@ public class Chess {
             return returnPlay;
         }
 
+        // Execute the move
         board.movePiece(from, to);
         returnPlay.piecesOnBoard = board.getPieces();
+
+        // Handle draw offer
+        if (parts.length > 2 && parts[2].toLowerCase().equals("draw?")) {
+            returnPlay.message = ReturnPlay.Message.DRAW;
+            return returnPlay;
+        }
 
         String opponent = (currentPlayer.equals("white")) ? "black" : "white";
 
