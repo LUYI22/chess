@@ -1,2 +1,2 @@
 Enpassant
-check/checkmate (need to make sure is working)
+Checkmate (need to make sure is working)
