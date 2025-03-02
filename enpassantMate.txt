@@ -1,0 +1,10 @@
+//enpassant then Checkmate
+e2 e4
+a7 a6
+e4 e5
+d7 d5 (En passant opportunity created)
+e5 d6 (White captures en passant)
+b8 c6
+d6 c7
+d8 d3
+c7 d8

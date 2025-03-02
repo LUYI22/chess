@@ -189,27 +189,31 @@ private boolean isValidCastlingMove(Piece king, String from, String to) {
         }
         String lastFrom = parts[0];
         String lastTo = parts[1];
-
+    
         int lastFromX = lastFrom.charAt(0) - 'a';
         int lastFromY = Character.getNumericValue(lastFrom.charAt(1)) - 1;
         int lastToX = lastTo.charAt(0) - 'a';
         int lastToY = Character.getNumericValue(lastTo.charAt(1)) - 1;
-
+    
         Piece lastMovedPiece = squares[lastToY][lastToX];
         if (!(lastMovedPiece instanceof Pawn)) {
             return false;
         }
-
+    
         if (Math.abs(lastFromY - lastToY) == 2 && lastFromX == lastToX) {
-            if (color.equals("white") && currentRank == 5 && finalRank == 6 && lastToY == 4 && lastToX == finalFile.ordinal()) {
+            //Check if the en passant target is one file away from the current pawn
+            if (Math.abs(currentFile.ordinal() - lastToX) !=1){
+                return false;
+            }
+            if (color.equals("white") && currentRank == 5 && finalRank == 6 && lastToY == 4) {
                 return true;
-            } else if (color.equals("black") && currentRank == 4 && finalRank == 3 && lastToY == 3 && lastToX == finalFile.ordinal()) {
+            } else if (color.equals("black") && currentRank == 4 && finalRank == 3 && lastToY == 3) {
                 return true;
             }
         }
-
+    
         return false;
-    }
+    }    
 
     public ArrayList<ReturnPiece> getPieces() {
         ArrayList<ReturnPiece> pieces = new ArrayList<>();

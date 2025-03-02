@@ -36,15 +36,16 @@ public class Pawn extends Piece {
     }
 
     private boolean isEnPassantMove(PieceFile currentFile, PieceFile finalFile, int currentRank, int finalRank) {
+        // Basic en passant conditions: diagonal move, correct rank
         if (Math.abs(currentFile.ordinal() - finalFile.ordinal()) == 1) {
-            if (this.color.equals("white") && currentRank == 5 && finalRank == 6) {
-                return board.isEnPassantPossible(currentFile, finalFile, currentRank, finalRank, this.color);
-            } else if (this.color.equals("black") && currentRank == 4 && finalRank == 3) {
+            if ((this.color.equals("white") && finalRank == currentRank + 1) ||
+                (this.color.equals("black") && finalRank == currentRank - 1)) {
                 return board.isEnPassantPossible(currentFile, finalFile, currentRank, finalRank, this.color);
             }
         }
         return false;
     }
+    
 
     @Override
     public void move(String destination) {
