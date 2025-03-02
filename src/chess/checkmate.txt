@@ -1,0 +1,27 @@
+e2 e4
+e7 e5
+g1 f3
+b8 c6
+f1 c4
+g8 f6
+d2 d3
+f8 c5
+c2 c3
+d7 d6
+b1 d2
+c8 g4
+h2 h3
+g4 h5
+d1 b3
+d8 d7
+b3 c2
+e8 g8
+c2 f5
+d6 e5
+f3 e5
+d7 e5
+d2 e4
+h5 f3
+e1 g1
+d8 e7
+f5 c8 //checkmate here
