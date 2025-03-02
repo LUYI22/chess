@@ -127,14 +127,21 @@ public class Chess {
         Piece rook = board.getPieceAt(rookFile, rank);
     
         if (rook == null) {
-            throw new NullPointerException("Rook is null during castling");
+            throw new NullPointerException("Rook is null during castling from " + rookFile.name() + rank);
         }
+    
+        //System.out.println("Performing castling: moving king from " + from + " to " + to);
+        //System.out.println("Moving rook from " + rookFile.name() + rank);
     
         board.movePiece(from, to);
         if (rookFile == PieceFile.h) {
-            board.movePiece(rookFile.name() + rank, "f" + rank);
+            board.setPieceAt(rookFile, rank, null); // Remove the rook from its original position
+            board.setPieceAt(PieceFile.f, rank, rook); // Place the rook at its new position
+            rook.move("f" + rank); // Update the rook's position
         } else {
-            board.movePiece(rookFile.name() + rank, "d" + rank);
+            board.setPieceAt(rookFile, rank, null); // Remove the rook from its original position
+            board.setPieceAt(PieceFile.d, rank, rook); // Place the rook at its new position
+            rook.move("d" + rank); // Update the rook's position
         }
     }
 }

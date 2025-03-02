@@ -173,6 +173,21 @@ private boolean isValidCastlingMove(Piece king, String from, String to) {
             }
         }
     }
+    
+    private void printBoard() {
+        for (int y = 7; y >= 0; y--) {
+            for (int x = 0; x < 8; x++) {
+                Piece piece = squares[y][x];
+                if (piece == null) {
+                    System.out.print((x + y) % 2 == 0 ? "## " : "   ");
+                } else {
+                    System.out.print(piece + " ");
+                }
+            }
+            System.out.println(8 - y);
+        }
+        System.out.println(" a  b  c  d  e  f  g  h");
+    }
 
     public ArrayList<ReturnPiece> getPieces() {
         ArrayList<ReturnPiece> pieces = new ArrayList<>();

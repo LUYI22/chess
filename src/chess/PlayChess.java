@@ -39,45 +39,43 @@ public class PlayChess {
         
         sc.close();
     }
-	
-	static void printBoard(ArrayList<ReturnPiece> pieces) {
-		String[][] board = makeBlankBoard();
-		if (pieces != null) {
-			printPiecesOnBoard(pieces, board);
-		}
-		for (int r=0; r < 8; r++) {
-			for (int c=0; c < 8; c++) {
-				System.out.print(board[r][c] + " ");
-			}	
-			System.out.println((8-r));
-		}
-		System.out.println(" a  b  c  d  e  f  g  h");
-	}
-	
-	static String[][] makeBlankBoard() {
-		String[][] board = new String[8][8];
-		for (int r=0; r < 8; r++) {
-			for (int c=0; c < 8; c++) {
-				if (r % 2 == 0) {
-					board[r][c] = c % 2 == 0 ? "  " : "##";
-				} else {
-					board[r][c] = c % 2 == 0 ? "##" : "  ";
-				}
-			}
-		}
-		return board;
-	}
-	
-	static void printPiecesOnBoard(
-			ArrayList<ReturnPiece> pieces, String[][] board) {
-		for (ReturnPiece rp: pieces) {
-			int file = (""+rp.pieceFile).charAt(0) - 'a';
-			String pieceStr = "" + rp.pieceType;
-			String ppstr = "";
-			ppstr += Character.toLowerCase(pieceStr.charAt(0));
-			ppstr += pieceStr.charAt(1) == 'P' ? 'p' : pieceStr.charAt(1);
-			board[8-rp.pieceRank][file] = ppstr;
-		}	
-	}
-	
+    
+    static void printBoard(ArrayList<ReturnPiece> pieces) {
+        String[][] board = makeBlankBoard();
+        if (pieces != null) {
+            printPiecesOnBoard(pieces, board);
+        }
+        for (int r = 0; r < 8; r++) {
+            for (int c = 0; c < 8; c++) {
+                System.out.print(board[r][c] + " ");
+            }
+            System.out.println(8 - r);
+        }
+        System.out.println(" a  b  c  d  e  f  g  h");
+    }
+
+    static String[][] makeBlankBoard() {
+        String[][] board = new String[8][8];
+        for (int r = 0; r < 8; r++) {
+            for (int c = 0; c < 8; c++) {
+                if (r % 2 == 0) {
+                    board[r][c] = c % 2 == 0 ? "  " : "##";
+                } else {
+                    board[r][c] = c % 2 == 0 ? "##" : "  ";
+                }
+            }
+        }
+        return board;
+    }
+
+    static void printPiecesOnBoard(ArrayList<ReturnPiece> pieces, String[][] board) {
+        for (ReturnPiece rp : pieces) {
+            int file = ("" + rp.pieceFile).charAt(0) - 'a';
+            String pieceStr = "" + rp.pieceType;
+            String ppstr = "";
+            ppstr += Character.toLowerCase(pieceStr.charAt(0));
+            ppstr += pieceStr.charAt(1) == 'P' ? 'p' : pieceStr.charAt(1);
+            board[8 - rp.pieceRank][file] = ppstr;
+        }
+    }
 }
