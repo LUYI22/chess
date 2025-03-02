@@ -29,7 +29,33 @@ public class Pawn extends Piece {
                    board.getPieceAt(currentFile, (currentRank + finalRank) / 2) == null; // Check both squares are empty
         }
 
+        if (isEnPassantMove(currentFile, finalFile, currentRank, finalRank)) {
+            return true;
+        }
         return false;
+    }
+
+    private boolean isEnPassantMove(PieceFile currentFile, PieceFile finalFile, int currentRank, int finalRank) {
+        if (Math.abs(currentFile.ordinal() - finalFile.ordinal()) == 1) {
+            if (this.color.equals("white") && currentRank == 5 && finalRank == 6) {
+                return board.isEnPassantPossible(currentFile, finalFile, currentRank, finalRank, this.color);
+            } else if (this.color.equals("black") && currentRank == 4 && finalRank == 3) {
+                return board.isEnPassantPossible(currentFile, finalFile, currentRank, finalRank, this.color);
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void move(String destination) {
+        super.move(destination);
+        if (Math.abs(this.pieceFile.ordinal() - PieceFile.valueOf(Chess.positionFile(destination)).ordinal()) == 1) {
+            int capturedPieceRank = this.color.equals("white") ? this.pieceRank - 1 : this.pieceRank + 1;
+            PieceFile capturedPieceFile = PieceFile.valueOf(Chess.positionFile(destination));
+            if (board.getPieceAt(capturedPieceFile, capturedPieceRank) != null) {
+                board.setPieceAt(capturedPieceFile, capturedPieceRank, null);
+            }
+        }
     }
 
     public Piece promote(String promotionPiece) {

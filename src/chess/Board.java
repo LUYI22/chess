@@ -1,9 +1,11 @@
 package chess;
 
 import java.util.ArrayList;
+import chess.ReturnPiece.PieceFile;
 
 public class Board {
     private Piece[][] squares;
+    private String lastMove;
     protected boolean whiteKingMoved = false;
     protected boolean blackKingMoved = false;
     protected boolean whiteRookMovedLeft = false;
@@ -172,6 +174,41 @@ private boolean isValidCastlingMove(Piece king, String from, String to) {
                 movePiece("h" + (fromY + 1), "f" + (fromY + 1));
             }
         }
+
+        // track the last move
+        lastMove = from + " " + to;
+    }
+
+    public boolean isEnPassantPossible(PieceFile currentFile, PieceFile finalFile, int currentRank, int finalRank, String color) {
+        if (lastMove == null) {
+            return false;
+        }
+        String[] parts = lastMove.split(" ");
+        if (parts.length < 2) {
+            return false;
+        }
+        String lastFrom = parts[0];
+        String lastTo = parts[1];
+
+        int lastFromX = lastFrom.charAt(0) - 'a';
+        int lastFromY = Character.getNumericValue(lastFrom.charAt(1)) - 1;
+        int lastToX = lastTo.charAt(0) - 'a';
+        int lastToY = Character.getNumericValue(lastTo.charAt(1)) - 1;
+
+        Piece lastMovedPiece = squares[lastToY][lastToX];
+        if (!(lastMovedPiece instanceof Pawn)) {
+            return false;
+        }
+
+        if (Math.abs(lastFromY - lastToY) == 2 && lastFromX == lastToX) {
+            if (color.equals("white") && currentRank == 5 && finalRank == 6 && lastToY == 4 && lastToX == finalFile.ordinal()) {
+                return true;
+            } else if (color.equals("black") && currentRank == 4 && finalRank == 3 && lastToY == 3 && lastToX == finalFile.ordinal()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public ArrayList<ReturnPiece> getPieces() {
