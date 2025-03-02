@@ -2,6 +2,8 @@ package chess;
 
 import java.util.ArrayList;
 
+import chess.ReturnPiece.PieceFile;
+
 public class Chess {
 
     enum Player { white, black }
@@ -12,7 +14,7 @@ public class Chess {
     /**
      * Plays the next move for whichever player has the turn.
      * 
-     * @param move String for next move, e.g. "a2 a3"
+     * @param move String for next move, e.g. "e1 g1" for castling
      * 
      * @return A ReturnPlay instance that contains the result of the move.
      *         See the section "The Chess class" in the assignment description for details of
@@ -43,10 +45,22 @@ public class Chess {
             return returnPlay;
         }
 
-        board.movePiece(from, to);
+        // Handle castling
+        Piece movedPiece = board.getPieceAt(ReturnPiece.PieceFile.valueOf(positionFile(from)), positionRank(from));
+        if (movedPiece instanceof King && Math.abs(positionFile(from).charAt(0) - positionFile(to).charAt(0)) == 2) {
+            if (isCastlingMove(movedPiece, from, to)) {
+                performCastling(movedPiece, from, to);
+            } else {
+                returnPlay.message = ReturnPlay.Message.ILLEGAL_MOVE;
+                return returnPlay;
+            }
+        } else {
+            board.movePiece(from, to);
+        }
+
         returnPlay.piecesOnBoard = board.getPieces();
 
-        Piece movedPiece = board.getPieceAt(ReturnPiece.PieceFile.valueOf(positionFile(to)), positionRank(to));
+        movedPiece = board.getPieceAt(ReturnPiece.PieceFile.valueOf(positionFile(to)), positionRank(to));
         if (movedPiece instanceof Pawn && (positionRank(to) == 1 || positionRank(to) == 8)) {
             String promotionPiece = parts.length > 2 ? parts[2].toUpperCase() : "Q";
             Piece promotedPiece = ((Pawn) movedPiece).promote(promotionPiece);
@@ -91,5 +105,36 @@ public class Chess {
 
     public static int positionRank(String position) {
         return Character.getNumericValue(position.charAt(1));
+    }
+
+    private static boolean isCastlingMove(Piece king, String from, String to) {
+        if (!(king instanceof King)) return false;
+
+        int rank = positionRank(from);
+        int fileDiff = Math.abs(positionFile(from).charAt(0) - positionFile(to).charAt(0));
+        if (fileDiff != 2) return false;
+
+        PieceFile rookFile = (positionFile(to).charAt(0) == 'g') ? PieceFile.h : PieceFile.a;
+        Piece rook = board.getPieceAt(rookFile, rank);
+        if (!(rook instanceof Rook)) return false;
+
+        return !((King) king).hasMoved && !((Rook) rook).hasMoved && board.isPathClear(king.pieceFile, rookFile, rank);
+    }
+
+    private static void performCastling(Piece king, String from, String to) {
+        int rank = positionRank(from);
+        PieceFile rookFile = (positionFile(to).charAt(0) == 'g') ? PieceFile.h : PieceFile.a;
+        Piece rook = board.getPieceAt(rookFile, rank);
+    
+        if (rook == null) {
+            throw new NullPointerException("Rook is null during castling");
+        }
+    
+        board.movePiece(from, to);
+        if (rookFile == PieceFile.h) {
+            board.movePiece(rookFile.name() + rank, "f" + rank);
+        } else {
+            board.movePiece(rookFile.name() + rank, "d" + rank);
+        }
     }
 }

@@ -28,4 +28,10 @@ public class King extends Piece {
         Piece pieceAtDestination = board.getPieceAt(finalFile, finalRank);
         return pieceAtDestination == null || !pieceAtDestination.getColor().equals(this.color);
     }
+
+    @Override
+    public void move(String destination) {
+        super.move(destination);
+        hasMoved = true;
+    }
 }

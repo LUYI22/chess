@@ -3,6 +3,7 @@ package chess;
 public abstract class Piece extends ReturnPiece {
     protected String color;
     protected Board board;  // Add this line
+    protected boolean hasMoved = false;
 
     public Piece(PieceType piecetype, PieceFile pieceFile, int pieceRank, String color, Board board) {
         super();
@@ -24,5 +25,9 @@ public abstract class Piece extends ReturnPiece {
     public void move(String destination){
         this.pieceFile = PieceFile.valueOf(Chess.positionFile(destination));
         this.pieceRank = Chess.positionRank(destination);
+    }
+    
+    public boolean hasMoved() {
+        return hasMoved;
     }
 }

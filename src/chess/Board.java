@@ -4,6 +4,12 @@ import java.util.ArrayList;
 
 public class Board {
     private Piece[][] squares;
+    protected boolean whiteKingMoved = false;
+    protected boolean blackKingMoved = false;
+    protected boolean whiteRookMovedLeft = false;
+    protected boolean whiteRookMovedRight = false;
+    protected boolean blackRookMovedLeft = false;
+    protected boolean blackRookMovedRight = false;
 
     public Board() {
         squares = new Piece[8][8];
@@ -16,38 +22,108 @@ public class Board {
         squares[0][1] = new Knight(ReturnPiece.PieceType.WN, ReturnPiece.PieceFile.b, 1, "white", this);
         squares[0][2] = new Bishop(ReturnPiece.PieceType.WB, ReturnPiece.PieceFile.c, 1, "white", this);
         squares[0][3] = new Queen(ReturnPiece.PieceType.WQ, ReturnPiece.PieceFile.d, 1, "white", this);
-        squares[0][4] = new King(ReturnPiece.PieceType.WK, ReturnPiece.PieceFile.e, 1, "white", this);
+        King whiteKing = new King(ReturnPiece.PieceType.WK, ReturnPiece.PieceFile.e, 1, "white", this);
+        squares[0][4] = whiteKing;
         squares[0][5] = new Bishop(ReturnPiece.PieceType.WB, ReturnPiece.PieceFile.f, 1, "white", this);
         squares[0][6] = new Knight(ReturnPiece.PieceType.WN, ReturnPiece.PieceFile.g, 1, "white", this);
-        squares[0][7] = new Rook(ReturnPiece.PieceType.WR, ReturnPiece.PieceFile.h, 1, "white", this);
+        Rook whiteRightRook = new Rook(ReturnPiece.PieceType.WR, ReturnPiece.PieceFile.h, 1, "white", this);
+        squares[0][7] = whiteRightRook;
         for (int i = 0; i < 8; i++) {
             squares[1][i] = new Pawn(ReturnPiece.PieceType.WP, ReturnPiece.PieceFile.values()[i], 2, "white", this);
         }
 
         // Initialize black pieces
-        squares[7][0] = new Rook(ReturnPiece.PieceType.BR, ReturnPiece.PieceFile.a, 8, "black",this);
+        Rook blackLeftRook = new Rook(ReturnPiece.PieceType.BR, ReturnPiece.PieceFile.a, 8, "black",this);
+        squares[7][0] = blackLeftRook;
         squares[7][1] = new Knight(ReturnPiece.PieceType.BN, ReturnPiece.PieceFile.b, 8, "black", this);
         squares[7][2] = new Bishop(ReturnPiece.PieceType.BB, ReturnPiece.PieceFile.c, 8, "black", this);
         squares[7][3] = new Queen(ReturnPiece.PieceType.BQ, ReturnPiece.PieceFile.d, 8, "black", this);
-        squares[7][4] = new King(ReturnPiece.PieceType.BK, ReturnPiece.PieceFile.e, 8, "black", this);
+        King blackKing = new King(ReturnPiece.PieceType.BK, ReturnPiece.PieceFile.e, 8, "black", this);
+        squares[7][4] = blackKing;
         squares[7][5] = new Bishop(ReturnPiece.PieceType.BB, ReturnPiece.PieceFile.f, 8, "black", this);
         squares[7][6] = new Knight(ReturnPiece.PieceType.BN, ReturnPiece.PieceFile.g, 8, "black", this);
-        squares[7][7] = new Rook(ReturnPiece.PieceType.BR, ReturnPiece.PieceFile.h, 8, "black", this);
+        Rook blackRightRook = new Rook(ReturnPiece.PieceType.BR, ReturnPiece.PieceFile.h, 8, "black", this);
+        squares[7][7] = blackRightRook;
         for (int i = 0; i < 8; i++) {
             squares[6][i] = new Pawn(ReturnPiece.PieceType.BP, ReturnPiece.PieceFile.values()[i], 7, "black", this);
         }
     }
-
-    public boolean isValidMove(String from, String to, String player) {
+  public boolean isValidMove(String from, String to, String player) {
         int fromX = from.charAt(0) - 'a';
         int fromY = Character.getNumericValue(from.charAt(1)) - 1;
-
+        int toX = to.charAt(0) - 'a';
         Piece piece = squares[fromY][fromX];
+
         if (piece == null || !piece.getColor().equals(player)) {
             return false;
         }
 
+        // Castling Check
+        if (piece instanceof King && Math.abs(fromX - toX) == 2) {
+            return isValidCastlingMove(piece, from, to);
+        }
+
         return piece.canMove(to);
+    }
+private boolean isValidCastlingMove(Piece king, String from, String to) {
+        int fromX = from.charAt(0) - 'a';
+        int fromY = Character.getNumericValue(from.charAt(1)) - 1;
+        int toX = to.charAt(0) - 'a';
+        //int toY = Character.getNumericValue(to.charAt(1)) - 1;
+
+        if (((King)king).hasMoved()) {
+            return false;
+        }
+
+        // Kingside Castling
+        if (toX == 6) {
+            if ((king.getColor().equals("white") && whiteRookMovedRight) || (king.getColor().equals("black") && blackRookMovedRight)) {
+                return false;
+            }
+            // Check if the path is clear
+            if (!isPathClear(ReturnPiece.PieceFile.values()[fromX], ReturnPiece.PieceFile.values()[7], fromY + 1)) {
+                return false;
+            }
+            // Check if the king is in check, or passes through a square that is attacked
+            if (isSquareAttacked(fromX, fromY, king.getColor()) || isSquareAttacked(5, fromY, king.getColor()) || isSquareAttacked(6, fromY, king.getColor())) {
+                return false;
+            }
+            return true;
+        }
+        // Queenside Castling
+        else if (toX == 2) {
+            if ((king.getColor().equals("white") && whiteRookMovedLeft) || (king.getColor().equals("black") && blackRookMovedLeft)) {
+                return false;
+            }
+            // Check if the path is clear
+            if (!isPathClear(ReturnPiece.PieceFile.values()[fromX], ReturnPiece.PieceFile.values()[0], fromY + 1)) {
+                return false;
+            }
+            // Check if the king is in check, or passes through a square that is attacked
+            if (isSquareAttacked(fromX, fromY, king.getColor()) || isSquareAttacked(3, fromY, king.getColor()) || isSquareAttacked(2, fromY, king.getColor())) {
+                return false;
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean isSquareAttacked(int x, int y, String playerColor) {
+        String opponentColor = playerColor.equals("white") ? "black" : "white";
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                Piece piece = squares[j][i];
+                if (piece != null && piece.getColor().equals(opponentColor)) {
+                    String to = fileRankToString(ReturnPiece.PieceFile.values()[x], y + 1);
+                    if (piece.canMove(to)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     public void movePiece(String from, String to) {
@@ -55,11 +131,47 @@ public class Board {
         int fromY = Character.getNumericValue(from.charAt(1)) - 1;
         int toX = to.charAt(0) - 'a';
         int toY = Character.getNumericValue(to.charAt(1)) - 1;
-
+    
         Piece piece = squares[fromY][fromX];
+        if (piece == null) {
+            throw new NullPointerException("Cannot move a null piece from " + from + " to " + to);
+        }
+    
         squares[toY][toX] = piece;
         squares[fromY][fromX] = null;
         piece.move(to);
+    
+        // Update castling flags
+        if (piece instanceof King) {
+            if (piece.getColor().equals("white")) {
+                whiteKingMoved = true;
+            } else {
+                blackKingMoved = true;
+            }
+        } else if (piece instanceof Rook) {
+            if (piece.getColor().equals("white")) {
+                if (fromX == 0 && fromY == 0) {
+                    whiteRookMovedLeft = true;
+                } else if (fromX == 7 && fromY == 0) {
+                    whiteRookMovedRight = true;
+                }
+            } else {
+                if (fromX == 0 && fromY == 7) {
+                    blackRookMovedLeft = true;
+                } else if (fromX == 7 && fromY == 7) {
+                    blackRookMovedRight = true;
+                }
+            }
+        }
+    
+        // Handle castling move
+        if (piece instanceof King && Math.abs(fromX - toX) == 2) {
+            if (toX == 2) { // Queen-side castling
+                movePiece("a" + (fromY + 1), "d" + (fromY + 1));
+            } else if (toX == 6) { // King-side castling
+                movePiece("h" + (fromY + 1), "f" + (fromY + 1));
+            }
+        }
     }
 
     public ArrayList<ReturnPiece> getPieces() {
@@ -157,7 +269,7 @@ public class Board {
         for (int y = 0; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
                 Piece piece = squares[y][x];
-                if (piece != null && piece.getColor().equals(player) && 
+                if (piece != null && piece.getColor().equals(player) &&
                     (piece.pieceType == ReturnPiece.PieceType.WK || piece.pieceType == ReturnPiece.PieceType.BK)) {
                     return piece;
                 }
@@ -185,5 +297,15 @@ public class Board {
 
     private String fileRankToString(ReturnPiece.PieceFile file, int rank) {
         return file.toString() + rank;
+    }
+
+    public boolean isPathClear(ReturnPiece.PieceFile fromFile, ReturnPiece.PieceFile toFile, int rank) {
+        int step = fromFile.ordinal() < toFile.ordinal() ? 1 : -1;
+        for (int file = fromFile.ordinal() + step; file != toFile.ordinal(); file += step) {
+            if (getPieceAt(ReturnPiece.PieceFile.values()[file], rank) != null) {
+                return false; // Path is blocked
+            }
+        }
+        return true; // Path is clear
     }
 }

@@ -1,10 +1,8 @@
 package chess;
 
-import chess.Board;
-import chess.Chess;
-import chess.Piece;
-
 public class Rook extends Piece {
+    protected boolean hasMoved = false;
+
     public Rook(PieceType piecetype, PieceFile pieceFile, int pieceRank, String color, Board board) {
         super(piecetype, pieceFile, pieceRank, color, board);
     }
@@ -18,14 +16,14 @@ public class Rook extends Piece {
 
         if (isStraightMove(currentFile, finalFile, currentRank, finalRank)) {
             return isPathClear(currentFile, finalFile, currentRank, finalRank) &&
-                   isDestinationValid(finalFile, finalRank);
+                    isDestinationValid(finalFile, finalRank);
         }
         return false;
     }
 
     private boolean isStraightMove(PieceFile currentFile, PieceFile finalFile, int currentRank, int finalRank) {
-        return (currentFile == finalFile && currentRank != finalRank) || 
-               (currentFile != finalFile && currentRank == finalRank);
+        return (currentFile == finalFile && currentRank != finalRank) ||
+                (currentFile != finalFile && currentRank == finalRank);
     }
 
     private boolean isPathClear(PieceFile currentFile, PieceFile finalFile, int currentRank, int finalRank) {
@@ -52,5 +50,16 @@ public class Rook extends Piece {
     private boolean isDestinationValid(PieceFile finalFile, int finalRank) {
         Piece pieceAtDestination = board.getPieceAt(finalFile, finalRank);
         return pieceAtDestination == null || !pieceAtDestination.getColor().equals(this.color);
+    }
+    
+    public boolean hasMoved() {
+        return hasMoved;
+    }
+
+
+    @Override
+    public void move(String destination) {
+        super.move(destination);
+        hasMoved = true;
     }
 }
