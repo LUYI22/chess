@@ -1,3 +1,9 @@
+/**
+ * Chess Project for CS213 under Sesh Venagupal
+ * 
+ * @author Ivan Zheng
+ * @author Anna Lu
+ */
 package chess;
 
 import java.util.ArrayList;
