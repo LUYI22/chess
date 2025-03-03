@@ -1,4 +1,0 @@
-fool's mate
-f2 f3
-e7 e5
-g2 g4 //CHECKMATE here
