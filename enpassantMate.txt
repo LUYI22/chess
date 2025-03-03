@@ -7,4 +7,3 @@ e5 d6 (White captures en passant)
 b8 c6
 d6 c7
 d8 d3
-c7 d8

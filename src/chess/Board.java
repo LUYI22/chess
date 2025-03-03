@@ -50,24 +50,49 @@ public class Board {
             squares[6][i] = new Pawn(ReturnPiece.PieceType.BP, ReturnPiece.PieceFile.values()[i], 7, "black", this);
         }
     }
-  public boolean isValidMove(String from, String to, String player) {
+    public boolean isValidMove(String from, String to, String player) {
         int fromX = from.charAt(0) - 'a';
         int fromY = Character.getNumericValue(from.charAt(1)) - 1;
         int toX = to.charAt(0) - 'a';
+        int toY = Character.getNumericValue(to.charAt(1)) - 1;
         Piece piece = squares[fromY][fromX];
 
         if (piece == null || !piece.getColor().equals(player)) {
             return false;
         }
 
+        // En Passant Check - before general canMove
+         if (piece instanceof Pawn) {
+            if (isEnPassantMove(from, to, player)) {
+                return true;
+            }
+        }
         // Castling Check
         if (piece instanceof King && Math.abs(fromX - toX) == 2) {
             return isValidCastlingMove(piece, from, to);
         }
 
-        return piece.canMove(to);
+        if(!piece.canMove(to)){
+            return false;
+        }
+         // Simulate the move to check if it results in a check for the current player
+        Piece originalPieceAtDestination = squares[toY][toX];
+        squares[toY][toX] = piece;
+        squares[fromY][fromX] = null;
+
+        boolean isInCheck = isCheck(player);
+
+        // Undo the move
+        squares[fromY][fromX] = piece;
+        squares[toY][toX] = originalPieceAtDestination;
+
+        if (isInCheck) {
+            return false; // The move would result in a check, so it's invalid
+        }
+
+        return true;
     }
-private boolean isValidCastlingMove(Piece king, String from, String to) {
+    private boolean isValidCastlingMove(Piece king, String from, String to) {
         int fromX = from.charAt(0) - 'a';
         int fromY = Character.getNumericValue(from.charAt(1)) - 1;
         int toX = to.charAt(0) - 'a';
@@ -128,21 +153,78 @@ private boolean isValidCastlingMove(Piece king, String from, String to) {
         return false;
     }
 
+    private boolean isEnPassantMove(String from, String to, String playerColor) {
+        int fromX = from.charAt(0) - 'a';
+        int fromY = Character.getNumericValue(from.charAt(1)) - 1;
+        int toX = to.charAt(0) - 'a';
+        int toY = Character.getNumericValue(to.charAt(1)) - 1;
+
+        Piece piece = squares[fromY][fromX];
+
+        if (!(piece instanceof Pawn)) {
+            return false;
+        }
+
+        // En passant can only happen on the 5th rank for white and 4th rank for black
+        if ((playerColor.equals("white") && fromY != 4) || (playerColor.equals("black") && fromY != 3)) {
+            return false;
+        }
+
+         // The destination must be one file away
+        if (Math.abs(fromX - toX) != 1 || toY - fromY != (playerColor.equals("white") ? 1 : -1)) {
+            return false;
+        }
+
+        // Check if there's a pawn of the opposite color in the correct square
+        Piece targetPawn = squares[fromY][toX];  // y, x
+        if (targetPawn == null || !(targetPawn instanceof Pawn) || targetPawn.getColor().equals(playerColor)) {
+            return false;
+        }
+
+        // Finally, check if the last move was a two-square pawn advance by the target pawn
+        if (lastMove != null) {
+            String[] lastMoveParts = lastMove.split(" ");
+            if (lastMoveParts.length == 2) {
+                String lastMoveFrom = lastMoveParts[0];
+                String lastMoveTo = lastMoveParts[1];
+
+                int lastMoveFromX = lastMoveFrom.charAt(0) - 'a';
+                int lastMoveFromY = Character.getNumericValue(lastMoveFrom.charAt(1)) - 1;
+                int lastMoveToX = lastMoveTo.charAt(0) - 'a';
+                int lastMoveToY = Character.getNumericValue(lastMoveTo.charAt(1)) - 1;
+
+                // Verify that the pawn that moved last turn is the same pawn we're targeting for en passant
+                 if (lastMoveToX == toX && lastMoveToY == fromY && lastMoveFromX == toX &&
+                    Math.abs(lastMoveFromY - lastMoveToY) == 2 && squares[lastMoveToY][lastMoveToX] == targetPawn) {
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public void movePiece(String from, String to) {
         int fromX = from.charAt(0) - 'a';
         int fromY = Character.getNumericValue(from.charAt(1)) - 1;
         int toX = to.charAt(0) - 'a';
         int toY = Character.getNumericValue(to.charAt(1)) - 1;
-    
+
         Piece piece = squares[fromY][fromX];
         if (piece == null) {
             throw new NullPointerException("Cannot move a null piece from " + from + " to " + to);
         }
-    
+
+        // En Passant capture
+        if (piece instanceof Pawn && isEnPassantMove(from, to, piece.getColor())) {
+            int captureY = fromY;
+            int captureX = toX;
+            squares[captureY][captureX] = null;
+        }
+
         squares[toY][toX] = piece;
         squares[fromY][fromX] = null;
         piece.move(to);
-    
+
         // Update castling flags
         if (piece instanceof King) {
             if (piece.getColor().equals("white")) {
@@ -165,7 +247,7 @@ private boolean isValidCastlingMove(Piece king, String from, String to) {
                 }
             }
         }
-    
+
         // Handle castling move
         if (piece instanceof King && Math.abs(fromX - toX) == 2) {
             if (toX == 2) { // Queen-side castling
@@ -180,11 +262,6 @@ private boolean isValidCastlingMove(Piece king, String from, String to) {
     }
 
     public boolean isEnPassantPossible(PieceFile currentFile, PieceFile finalFile, int currentRank, int finalRank, String color) {
-        System.out.println("Last move: " + lastMove);
-        System.out.println("Current file: " + currentFile);
-        System.out.println("Final file: " + finalFile);
-        System.out.println("Current rank: " + currentRank);
-        System.out.println("Final rank: " + finalRank);
         if (lastMove == null) {
             return false;
         }
@@ -194,17 +271,17 @@ private boolean isValidCastlingMove(Piece king, String from, String to) {
         }
         String lastFrom = parts[0];
         String lastTo = parts[1];
-    
+
         int lastFromX = lastFrom.charAt(0) - 'a';
         int lastFromY = Character.getNumericValue(lastFrom.charAt(1)) - 1;
         int lastToX = lastTo.charAt(0) - 'a';
         int lastToY = Character.getNumericValue(lastTo.charAt(1)) - 1;
-    
+
         Piece lastMovedPiece = squares[lastToY][lastToX];
         if (!(lastMovedPiece instanceof Pawn)) {
             return false;
         }
-    
+
         if (Math.abs(lastFromY - lastToY) == 2 && lastFromX == lastToX) {
             //Check if the en passant target is one file away from the current pawn
             if (Math.abs(currentFile.ordinal() - lastToX) !=1){
@@ -216,9 +293,9 @@ private boolean isValidCastlingMove(Piece king, String from, String to) {
                 return true;
             }
         }
-    
+
         return false;
-    }    
+    }
 
     public ArrayList<ReturnPiece> getPieces() {
         ArrayList<ReturnPiece> pieces = new ArrayList<>();
@@ -235,13 +312,13 @@ private boolean isValidCastlingMove(Piece king, String from, String to) {
     public boolean isCheck(String player) {
         // Find the king
         Piece king = findKing(player);
-        String oppositePlayer = player.equals("white") ? "black" : "white";
+        String opponentColor = player.equals("white") ? "black" : "white";
 
         // Check if any opposite color piece can attack the king
         for (int y = 0; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
                 Piece piece = squares[y][x];
-                if (piece != null && piece.getColor().equals(oppositePlayer)) {
+                if (piece != null && piece.getColor().equals(opponentColor)) {
                     if (piece.canMove(fileRankToString(king.pieceFile, king.pieceRank))) {
                         return true;
                     }
@@ -250,7 +327,6 @@ private boolean isValidCastlingMove(Piece king, String from, String to) {
         }
         return false;
     }
-
     public boolean isCheckmate(String player) {
         if (!isCheck(player)) {
             return false;
@@ -344,7 +420,6 @@ private boolean isValidCastlingMove(Piece king, String from, String to) {
     private String fileRankToString(ReturnPiece.PieceFile file, int rank) {
         return file.toString() + rank;
     }
-
     public boolean isPathClear(ReturnPiece.PieceFile fromFile, ReturnPiece.PieceFile toFile, int rank) {
         int step = fromFile.ordinal() < toFile.ordinal() ? 1 : -1;
         for (int file = fromFile.ordinal() + step; file != toFile.ordinal(); file += step) {
