@@ -40,6 +40,7 @@ public class Chess {
         String[] parts = move.split(" ");
         if (parts.length < 2) {
             returnPlay.message = ReturnPlay.Message.ILLEGAL_MOVE;
+            returnPlay.piecesOnBoard = board.getPieces();
             return returnPlay;
         }
 
@@ -48,6 +49,7 @@ public class Chess {
 
         if (!board.isValidMove(from, to, currentPlayer.toString().toLowerCase())) {
             returnPlay.message = ReturnPlay.Message.ILLEGAL_MOVE;
+            returnPlay.piecesOnBoard = board.getPieces();
             return returnPlay;
         }
 
@@ -58,6 +60,7 @@ public class Chess {
                 performCastling(movedPiece, from, to);
             } else {
                 returnPlay.message = ReturnPlay.Message.ILLEGAL_MOVE;
+                returnPlay.piecesOnBoard = board.getPieces();
                 return returnPlay;
             }
         } else {
