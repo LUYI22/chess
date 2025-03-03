@@ -60,6 +60,9 @@ public class Pawn extends Piece {
             case "B":
                 promotedPiece = new Bishop(PieceType.valueOf(this.color.toUpperCase().charAt(0) + "B"), this.pieceFile, this.pieceRank, this.color, this.board);
                 break;
+            case "Q":
+                promotedPiece = new Queen(PieceType.valueOf(this.color.toUpperCase().charAt(0) + "Q"), this.pieceFile, this.pieceRank, this.color, this.board);
+                break;
             default:
                 promotedPiece = new Queen(PieceType.valueOf(this.color.toUpperCase().charAt(0) + "Q"), this.pieceFile, this.pieceRank, this.color, this.board);
                 break;
