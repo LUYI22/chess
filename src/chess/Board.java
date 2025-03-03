@@ -180,6 +180,11 @@ private boolean isValidCastlingMove(Piece king, String from, String to) {
     }
 
     public boolean isEnPassantPossible(PieceFile currentFile, PieceFile finalFile, int currentRank, int finalRank, String color) {
+        System.out.println("Last move: " + lastMove);
+        System.out.println("Current file: " + currentFile);
+        System.out.println("Final file: " + finalFile);
+        System.out.println("Current rank: " + currentRank);
+        System.out.println("Final rank: " + finalRank);
         if (lastMove == null) {
             return false;
         }

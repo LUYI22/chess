@@ -7,6 +7,7 @@ public class Pawn extends Piece {
 
     @Override
     public boolean canMove(String destination) {
+        System.out.println("Checking if pawn can move to " + destination);
         int currentRank = this.pieceRank;
         int finalRank = Chess.positionRank(destination);
         PieceFile currentFile = this.pieceFile;
@@ -30,12 +31,20 @@ public class Pawn extends Piece {
         }
 
         if (isEnPassantMove(currentFile, finalFile, currentRank, finalRank)) {
+            System.out.println("Calling isEnPassantMove for destination " + destination);
             return true;
+        } else {
+            System.out.println("Not calling isEnPassantMove for destination " + destination);
+            System.out.println("currentFile: " + currentFile);
+            System.out.println("finalFile: " + finalFile);
+            System.out.println("currentRank: " + currentRank);
+            System.out.println("finalRank: " + finalRank);
         }
         return false;
     }
 
     private boolean isEnPassantMove(PieceFile currentFile, PieceFile finalFile, int currentRank, int finalRank) {
+        System.out.println("Checking en passant move...");
         // Basic en passant conditions: diagonal move, correct rank
         if (Math.abs(currentFile.ordinal() - finalFile.ordinal()) == 1) {
             if ((this.color.equals("white") && finalRank == currentRank + 1) ||
